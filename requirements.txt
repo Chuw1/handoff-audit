@@ -1,0 +1,4 @@
+# The harness and the diagnostic need only the OpenAI client (tested with 3.22.1).
+openai>=1.45
+# The paper's figures also need matplotlib and numpy; the workbook functions in annotation/ need openpyxl:
+# pip install matplotlib numpy openpyxl
