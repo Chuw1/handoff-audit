@@ -69,6 +69,13 @@ run f4_sheet.stdout env CODE="$SID" ANN="$ANN" RUNS="$D/f4/raw/runs" OUT="$O/f4"
 run f4_targets.txt env MODELS=qwen3_8b,gptoss_20b TAG=f4 PREFIXES=U,V $PY "$A/f3_targets.py" "$D/f4/labels" "$O"
 run f4_primary.txt $PY "$A/f4_primary.py" "$D/f4r2/raw/runs" f4 "$D/f4/targets" "$D/f4/raw/runs"
 run f4_extra.txt $PY "$A/f4_extra.py" "$D"
+# F5, the system prompt's approval sentence: sheets, the planned test, provenance (Dev, Test, F2, F4 and F5)
+run f5_sheet.stdout env CODE="$SID" ANN="$ANN" RUNS="$D/f5/raw/runs" OUT="$O/f5" DISC='dev_disc_f5_{m}' MODELS=default_qwen3_8b,scoped_qwen3_8b,default_gptoss_20b,scoped_gptoss_20b PREFIXES=U,V SEEDS=20261021,20261022 $PY "$A/f3_sheet.py"
+run f5_primary.txt $PY "$A/f5_analysis.py" "$D/f5/raw/runs" "$D/f5/labels"
+run f5_provenance.txt $PY "$A/f5_provenance.py" "$C" "$D/f5/raw/runs" "$D/f5/labels"
+run f5_agreement.txt $PY "$A/f5_agreement.py" "$D/f5/labels"
+run f5_cluster.txt $PY "$A/f5_cluster.py" "$D/f5/raw/runs" "$D/f5/labels"
+run provenance.txt $PY "$C/forensics/provenance.py" "$C" "$D"
 # figures (drawn, not compared: PDF files carry creation dates)
 run fig_pipeline.stdout $PY "$A/fig_pipeline.py" "$O/fig_pipeline"
 run fig_forest.stdout $PY "$A/fig_forest.py" "$O/boot.json" "$O/fig_forest"
@@ -92,6 +99,8 @@ for k in restr auth; do
   same "$O/f3c_${k}_key.json" "$D/f3c/labels/f3c_${k}_key.json" "F3c $k key"
   same "$O/f4_${k}_sheet.txt" "$D/f4/labels/f4_${k}_sheet.txt" "F4 $k sheet"
   same "$O/f4_${k}_key.json" "$D/f4/labels/f4_${k}_key.json" "F4 $k key"
+  same "$O/f5_${k}_sheet.txt" "$D/f5/labels/f5_${k}_sheet.txt" "F5 $k sheet"
+  same "$O/f5_${k}_key.json" "$D/f5/labels/f5_${k}_key.json" "F5 $k key"
 done
 echo "=== replay target files"
 for t in f1f2/targets/targets_f2_qwen3_8b.json f1f2/targets/targets_f2_gptoss_20b.json f3/targets/targets_f3_gptoss_120b.json f3c/targets/targets_f3c_qwen3_235b.json f4/targets/targets_f4_qwen3_8b.json f4/targets/targets_f4_gptoss_20b.json; do

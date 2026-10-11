@@ -3,13 +3,13 @@
 When an LLM agent compacts its context, it replaces most of its history with a summary it writes itself.
 This package tests two things about those handoff summaries: how often they state a permission or a
 requirement that the task record does not support ("unsupported policy"), and whether such a sentence
-changes what the agent does next. It runs on any model behind an OpenAI-compatible chat API with tool
-calling, so it can be used as a benchmark (compare models on the same 60 held-out tasks) and as a diagnostic
+changes what the agent does next. It is built to run on any model behind an OpenAI-compatible chat API with
+tool calling (so far tested end to end only against scripted servers; see Limits), so it can be used as a benchmark (compare models on the same 60 held-out tasks) and as a diagnostic
 (see which sentences a model invents and what they do), for example when a new model version comes out.
 
 It is the code of the paper "When Do Summaries Become Instructions? Unsupported Policy in LLM Agents'
 Self-Written Handoff Summaries" (anonymized for review). Much of the code was written with the help of
-Claude (Anthropic), as stated in the paper.
+Claude (Anthropic), as stated in the submission's Responsible NLP checklist.
 
 ## Test your own model
 
@@ -135,10 +135,10 @@ compares it with that file (the specification it hashes, `docs/TEST_SET_DRAFT_zh
 
 ## Code versions
 
-This repository holds harness v0.3.10.3. The paper's supplementary code archive holds v0.3.10.1, which the F1,
-F2, F4 and scale-check runs used. v0.3.10.2 adds `--system-prompt {default,scoped}` for the planned follow-up F5
-(`stageA/docs/FOLLOWUP_PLAN_F5_sysprompt.md`, with `analysis/f5_analysis.py` and `forensics/provenance.py`, all
-written before any F5 run). v0.3.10.3 adds the `api:` model spec, `diagnose/` and `diagnose.sh`. With the default
+This repository holds harness v0.3.10.3. The paper's supplementary code archive holds v0.3.10.2, which the F5
+runs used: v0.3.10.1 (used by the F1, F2, F4 and scale-check runs) plus `--system-prompt {default,scoped}` for
+the follow-up F5 (`stageA/docs/FOLLOWUP_PLAN_F5_sysprompt.md`, with `analysis/f5_analysis.py` and
+`forensics/provenance.py`, all written before any F5 run). v0.3.10.3 adds the `api:` model spec, `diagnose/` and `diagnose.sh`. With the default
 settings and a `vllm:` or `openai:` spec, both versions send the same requests and give the same job ids as
 v0.3.10.1. The development and test runs used v0.3.10. In code, v0.3.10.1 differs only in `scripts/run_replay.py`, `sid/replay.py`, `scripts/selfcheck.py`
 and the new `tests/test_v03101.py` (replay of an explicit list of target sentences and the `neutral_control`
@@ -227,7 +227,7 @@ bash analysis/reproduce.sh "$PWD" /path/to/data /tmp/new_out_dir /path/to/data/o
 ```
 
 The output folder must not exist yet. The script recomputes every analysis from the run records and labels,
-rebuilds all AI-reader sheets (Dev, Test, compaction prompts, F2, F3, F3c, F4) from the run records and compares
+rebuilds all AI-reader sheets (Dev, Test, compaction prompts, F2, F3, F3c, F4, F5) from the run records and compares
 them byte for byte with the released sheets, rebuilds the F2, F3, F3c and F4 replay target files, draws the
 figures, and compares each recomputed analysis with the copy in `data/outputs/`. It exits with a non-zero
 status if anything differs or fails. On our copy everything matches.
@@ -253,6 +253,8 @@ in which they were read.
 | Seed reproducibility, Test vs. F1 (Appendix B) | `reproducibility.py` |
 | Scale checks, gpt-oss-120b and Qwen3-235B (Appendix F) | `f3_sheet.py`, `f3_targets.py`, `f3_analysis.py`, `f3_posthoc.py`, `scale_prevalence.py` |
 | F4, pre-specified check of the step finding (Section 5.4, Table 5, Appendix G) | `f3_sheet.py`, `f3_targets.py`, `f4_primary.py` (the script fixed in the F4 plan, unchanged), `f4_extra.py` |
+| F5, the system prompt's approval sentence (Section 5.6, Table 15, Appendix H) | `f3_sheet.py`, `f5_analysis.py` (the script fixed in the F5 plan, unchanged), `f5_provenance.py` (the classes of `forensics/provenance.py`, adapted to the F5 runs; not hashed in advance), `f5_agreement.py`, `f5_cluster.py` (post hoc: how the result depends on templates) |
+| Where unsupported policy came from (provenance trace; Section 5.6, Appendix H) | `../forensics/provenance.py` |
 | Study-design figure (Figure 1) | `fig_pipeline.py` |
 
 ## How the AI labels were made
