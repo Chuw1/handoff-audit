@@ -1,0 +1,5 @@
+df53f27b597a20842b2581574bc6e3c95036a7c1d1aa3bb93830e9b827c0c752  FOLLOWUP_PLAN_F6_heldout.md
+c83518f35a763fe81b17e2608d921d3c0efa34bf4ec96aa3660b7bf5c2d601d5  f6_analysis.py
+5039b85adfebeeb6069036886eed06d4e8dd081eeeef70ca8080e3c39674d626  f6_provenance.py
+8172b14c75a05474238886dff9168ac6696a35445196bb975c4aa3be4a406b09  stageA_v0.3.10.2.zip (the F5 code, unchanged)
+hashed 2026-10-11T19:08:44Z, before any F6 run
