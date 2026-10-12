@@ -7,9 +7,8 @@ changes what the agent does next. It is built to run on any model behind an Open
 tool calling (so far tested end to end only against scripted servers; see Limits), so it can be used as a benchmark (compare models on the same 60 held-out tasks) and as a diagnostic
 (see which sentences a model invents and what they do), for example when a new model version comes out.
 
-It is the code of the paper "When Do Summaries Become Instructions? Unsupported Policy in LLM Agents'
-Self-Written Handoff Summaries" (anonymized for review). Much of the code was written with the help of
-Claude (Anthropic), as stated in the submission's Responsible NLP checklist.
+It is the code of a paper under anonymous review. AI assistants helped write parts of the code, as stated in
+the submission's Responsible NLP checklist.
 
 ## Test your own model
 
@@ -43,7 +42,6 @@ changed after that.
 | Where the model runs | Spec |
 |---|---|
 | OpenAI API | `api:<model-id>@https://api.openai.com/v1` |
-| Claude API (OpenAI SDK compatibility) | `api:<model-id>@https://api.anthropic.com/v1/` |
 | Gemini API (OpenAI compatibility) | `api:<model-id>@https://generativelanguage.googleapis.com/v1beta/openai/` |
 | OpenRouter and other gateways | `api:<model-id>@https://openrouter.ai/api/v1` |
 | Your own vLLM or SGLang server (open weights) | `openai:<served-name>@http://localhost:8000/v1` |
@@ -100,7 +98,7 @@ reason at length use more. The readers make one call per flagged summary each. T
 ### Limits
 
 - `diagnose/ai_reader.py` automates the reading step with one model call per item. The paper's labels came
-  from Claude agents given the same guide (`analysis/READER_PROMPTS.md`); the agreement between the two has
+  from AI agents given the same guide (`analysis/READER_PROMPTS.md`); the agreement between the two has
   not been measured. Check a sample of items by hand (`labels/diag_*_sheet.txt` with `labels/ai_*.jsonl`), and
   prefer a reader from another model family than the model under test.
 - Only rule-flagged summaries are read, and the rule labeler's recall is unknown, so the shares are lower bounds.
@@ -263,7 +261,7 @@ A sheet script writes each candidate summary as one item, in a fixed random orde
 or any outcome. Which summaries become items differs by set: Dev, a random sample of the restriction flags
 and every authorization flag among the replayed sources; Test, every replayed source (restriction sources
 replayed from the flags, authorization sources plus unflagged controls); compaction prompts, F2, F3, F3c and F4,
-every rule-flagged summary. Two AI readers (separate Claude agents with no shared context) receive the guide
+every rule-flagged summary. Two AI readers (separate agents with no shared context) receive the guide
 and a short task message (`READER_PROMPTS.md`, exact text per set). Readers a and b read the same items and
 readers c and d read the same items (the other half of the set, or for the compaction-prompt runs the
 brief-prompt sheets), so every item has two independent labels. Rule-labeler flags are shown as starred
