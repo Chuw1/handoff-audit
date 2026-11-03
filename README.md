@@ -7,8 +7,8 @@ changes what the agent does next. It is built to run on any model behind an Open
 tool calling (so far tested end to end only against scripted servers; see Limits), so it can be used as a benchmark (compare models on the same 60 held-out tasks) and as a diagnostic
 (see which sentences a model invents and what they do), for example when a new model version comes out.
 
-It is the code of a paper under anonymous review. AI assistants helped write parts of the code, as stated in
-the submission's Responsible NLP checklist.
+It is the code of the paper "When Do Summaries Become Instructions? Unsupported Policy in LLM Agents' Self-Written Handoff Summaries" (arXiv: (ID to be added)). AI assistants helped write parts of the code, as stated in
+the paper's Acknowledgments.
 
 ## Test your own model
 
@@ -133,7 +133,7 @@ compares it with that file (the specification it hashes, `docs/TEST_SET_DRAFT_zh
 
 ## Code versions
 
-This repository holds harness v0.3.10.3. The paper's supplementary code archive holds v0.3.10.2, which the F5
+This repository holds harness v0.3.10.3. The review-time code archive (`sid_code_v21.zip` in this repository's GitHub Release) holds v0.3.10.2, which the F5
 runs used: v0.3.10.1 (used by the F1, F2, F4 and scale-check runs) plus `--system-prompt {default,scoped}` for
 the follow-up F5 (`stageA/docs/FOLLOWUP_PLAN_F5_sysprompt.md`, with `analysis/f5_analysis.py` and
 `forensics/provenance.py`, all written before any F5 run). v0.3.10.3 adds the `api:` model spec, `diagnose/` and `diagnose.sh`. With the default
@@ -218,11 +218,20 @@ appends one JSON row per episode, so an interrupted job can be resubmitted.
 
 ## Reproducing the reported numbers
 
-The run records and labels are in the data archive of the paper's supplementary material. Unpack it, then:
+The labels and run records are in the data archive `sid_data_v20.tgz` in this repository's GitHub Release, next to the
+review-time code archive `sid_code_v21.zip`. The Kimi K2.6 check (F3b) is in a third release archive,
+`sid_data_f3b.tgz`; see its `DEVIATIONS_F3b.md`. [HASHES.md](HASHES.md) gives the SHA-256 of all three archives and of the plans,
+scripts, reader guide and frozen test split named in the paper; check a download with `sha256sum`. To reproduce the
+numbers, put both archives in a new empty folder, unpack both there, and run the code archive's own
+`analysis/reproduce.sh` with the unpacked code archive as the code folder:
 
 ```bash
-bash analysis/reproduce.sh "$PWD" /path/to/data /tmp/new_out_dir /path/to/data/outputs
+unzip -q sid_code_v21.zip     # creates code/
+tar xzf sid_data_v20.tgz      # creates data/
+bash code/analysis/reproduce.sh "$PWD/code" "$PWD/data" "$PWD/repro_out" "$PWD/data/outputs"
 ```
+
+The last line it prints should be `ALL MATCH` (exit status 0).
 
 The output folder must not exist yet. The script recomputes every analysis from the run records and labels,
 rebuilds all AI-reader sheets (Dev, Test, compaction prompts, F2, F3, F3c, F4, F5) from the run records and compares
